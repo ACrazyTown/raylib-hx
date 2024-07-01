@@ -28,10 +28,11 @@ package;
  *
 **********************************************************************************************/
 
-import Rl.Color;
-import Rl.Font;
-import Rl.Rectangle;
-import Rl.Vector2;
+import cpp.RawPointer;
+import Raylib.Color;
+import Raylib.Font;
+import Raylib.Rectangle;
+import Raylib.Vector2;
 import cpp.CastCharStar;
 import cpp.ConstCharStar;
 import cpp.Pointer;
@@ -360,8 +361,8 @@ extern class Raygui {
     @:native("GuiToggleGroup") static function guiToggleGroup(bounds:Rectangle, text:ConstCharStar, active:Int):Int;
     @:native("GuiCheckBox") static function guiCheckBox(bounds:Rectangle, text:ConstCharStar, checked:Bool):Int;
     @:native("GuiComboBox") static function guiComboBox(bounds:Rectangle, text:ConstCharStar, active:Int):Int;
-    @:native("GuiDropDownBox") static function guiDropDownBox(bounds:Rectangle, text: ConstCharStar, active:Star<Int>, editMode:Bool):Bool;
-    @:native("GuiSpinner") static function guiSpinner(bounds:Rectangle, text:ConstCharStar, value:Star<Int>, minValue:Int, maxValue:Int, editMode:Bool):Bool;
+    @:native("GuiDropDownBox") static function guiDropDownBox(bounds:Rectangle, text: ConstCharStar, active:RawPointer<Int>, editMode:Bool):Bool;
+    @:native("GuiSpinner") static function guiSpinner(bounds:Rectangle, text:ConstCharStar, value:RawPointer<Int>, minValue:Int, maxValue:Int, editMode:Bool):Bool;
     @:native("GuiValueBox") static function guiValueBox(bounds:Rectangle, text:ConstCharStar, value:Pointer<Int>, minValue:Int, maxValue:Int, editMode:Bool):Bool;
     @:native("GuiTextBox") static function guiTextBox(bounds:Rectangle, text:CastCharStar, textSize:Int, editMode:Bool):Bool;
     @:native("GuiTextBoxMulti") static function guiTextBoxMulti(bounds:Rectangle, text:CastCharStar, textSize:Int, editMode:Bool):Bool;
@@ -373,9 +374,9 @@ extern class Raygui {
     @:native("GuiGrid") static function guiGrid(bounds:Rectangle, spacing:Float, subdivs:Int):Vector2;
 
     @:native("GuiListView") static function guiListView(bounds:Rectangle, text:ConstCharStar, scrollIndex:Pointer<Int>, active:Int):Int;
-    @:native("GuiListViewEx") static function guiListViewEx(bounds:Rectangle, text:Star<Star<ConstCharStar>>, count:Int, focus:Star<Int>, scrollIndex:Star<Int>, active:Int):Int;
+    @:native("GuiListViewEx") static function guiListViewEx(bounds:Rectangle, text:RawPointer<RawPointer<ConstCharStar>>, count:Int, focus:RawPointer<Int>, scrollIndex:RawPointer<Int>, active:Int):Int;
     @:native("GuiMessageBox") static function guiMessageBox(bounds:Rectangle, title:ConstCharStar, message:ConstCharStar, buttons:ConstCharStar):Int;
-    @:native("GuiTextInputBox") static function guiTextInputBox(bounds:Rectangle, title:ConstCharStar, message:ConstCharStar, buttons:ConstCharStar, text:CastCharStar, textMaxSize:Int, secretViewActive:Star<Int>):Int;
+    @:native("GuiTextInputBox") static function guiTextInputBox(bounds:Rectangle, title:ConstCharStar, message:ConstCharStar, buttons:ConstCharStar, text:CastCharStar, textMaxSize:Int, secretViewActive:RawPointer<Int>):Int;
     @:native("GuiColorPicker") static function guiColorPicker(bounds:Rectangle, text:ConstCharStar, color:Color):Color;
     @:native("GuiColorPanel") static function guiColorPanel(bounds:Rectangle, text:ConstCharStar, color:Color):Color;
     @:native("GuiColorBarAlpha") static function guiColorBarAlpha(bounds:Rectangle, text:ConstCharStar, alpha:Float):Float;

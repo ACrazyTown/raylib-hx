@@ -27,6 +27,7 @@
  */
 package;
 
+import cpp.RawPointer;
 import cpp.Char;
 import cpp.ConstCharStar;
 import cpp.ConstStar;
@@ -274,7 +275,7 @@ typedef Rectangle = cpp.Struct<RlRectangle>;
 @:structAccess
 extern class RlImage {
     /** Image raw data **/
-    var data:Star<Void>;
+    var data:RawPointer<Void>;
     /** Image base width **/
     var width:Int;
     /** Image base height **/
@@ -390,9 +391,9 @@ extern class RlFont {
     /** Characters texture atlas **/
     var texture:Texture2D;
     /** Character rectabgle in texture **/
-    var recs:Star<Rectangle>;
+    var recs:RawPointer<RlRectangle>;
     /** Charcter info data **/
-    var glyphs:Star<GlyphInfo>;
+    var glyphs:RawPointer<RlGlyphInfo>;
 }
 
 /** Font, font texture and CharInfo array data **/
@@ -460,23 +461,23 @@ extern class RlMesh {
 
     // Vertex attributes data
     /** Vertex position (XYZ - 3 components per vertex) (shader-location = 0) **/
-    var verticies:Star<Float>;
+    var verticies:RawPointer<Float>;
     /** Vertex texture coordinates (UV - 2 components per vertex) (shader-location = 1) **/
-    var textcoords:Star<Float>;
+    var textcoords:RawPointer<Float>;
     /** Vertex texture second coordinates (UV - 2 components per vertex) (shader-location = 5) **/
-    var texcoord2:Star<Float>;
+    var texcoord2:RawPointer<Float>;
     /** Vertex normals (XYZ - 3 components per vertex) (shader-location = 2) **/
-    var normals:Star<Float>;
+    var normals:RawPointer<Float>;
     /** Vertex tangents (XYZW - 4 components per vertex) (shader-location = 4) **/
-    var tangents:Star<Float>;
+    var tangents:RawPointer<Float>;
 
-    var animVertices:Star<Float>;
-    var animNormals:Star<Float>;
-    var boneIds:Star<Int>;
-    var boneWeights:Star<Float>;
+    var animVertices:RawPointer<Float>;
+    var animNormals:RawPointer<Float>;
+    var boneIds:RawPointer<Int>;
+    var boneWeights:RawPointer<Float>;
 
     var vaoId:UInt;
-    var vboId:Star<UInt>;
+    var vboId:RawPointer<UInt>;
 }
 
 /** Mesh, vertex data and vao/vbo **/
@@ -489,7 +490,7 @@ extern class Shader {
     /** Shader program id **/
     var id:UInt;
     /** Shader locations array (RL_MAX_SHADER_LOCATIONS) **/
-    var locs:Star<Int>;
+    var locs:RawPointer<Int>;
 }
 
 @:include("raylib.h")
@@ -506,7 +507,7 @@ extern class MaterialMap {
 @:structAccess
 extern class Material {
     var shader:Shader;
-    var maps:Star<MaterialMap>;
+    var maps:RawPointer<MaterialMap>;
     var params:Array<Float>;
 }
 
@@ -535,13 +536,13 @@ extern class Model {
 
     var meshCount:Int;
     var materialCount:Int;
-    var meshes:Star<Mesh>;
-    var materials:Star<Material>;
-    var meshMaterials:Star<Int>;
+    var meshes:RawPointer<RlMesh>;
+    var materials:RawPointer<Material>;
+    var meshMaterials:RawPointer<Int>;
 
     var boneCount:Int;
-    var bones:Star<BoneInfo>;
-    var bindPose:Star<Transform>;
+    var bones:RawPointer<BoneInfo>;
+    var bindPose:RawPointer<Transform>;
 }
 
 @:include("raylib.h")
@@ -550,8 +551,8 @@ extern class Model {
 extern class ModelAnimation {
     var boneCount:Int;
     var frameCount:Int;
-    var bones:Star<BoneInfo>;
-    var framePoses:Star<Star<Transform>>;
+    var bones:RawPointer<BoneInfo>;
+    var framePoses:RawPointer<RawPointer<Transform>>;
 }
 
 @:include("raylib.h")
@@ -600,7 +601,7 @@ extern class Wave {
     var sampleRate:UInt;
     var sampleSize:UInt;
     var channels:UInt;
-    var data:Star<Void>;
+    var data:RawPointer<Void>;
 }
 
 @:include("raylib.h")
@@ -617,8 +618,8 @@ extern class RAudioProcessor {}
 @:native("AudioStream")
 @:structAccess
 extern class AudioStream {
-    var buffer:Star<RAudioBuffer>;
-    var processor:Star<RAudioProcessor>;
+    var buffer:RawPointer<RAudioBuffer>;
+    var processor:RawPointer<RAudioProcessor>;
 
     var sampleRate:UInt;
     var sampleSize:UInt;
@@ -642,7 +643,7 @@ extern class Music {
     var looping:Bool;
 
     var ctxType:Int;
-    var ctxData:ConstStar<Void>;
+    var ctxData:RawConstPointer<Void>;
 }
 
 @:include("raylib.h")
@@ -684,7 +685,7 @@ extern class VrStereoConfig {
 extern class FilePathList {
     var capacity:cpp.UInt32;
     var count:cpp.UInt32;
-    var paths:Star<Star<cpp.Char>>;
+    var paths:RawPointer<RawPointer<cpp.Char>>;
 }
 
 // NOT IMPLEMENTED RN
@@ -1407,7 +1408,7 @@ extern class Raylib {
     @:native("SetWindowMonitor") static function setWindowMonitor(monitor:Int):Void;
     @:native("SetWindowMinSize") static function setWindowMinSize(width:Int, height:Int):Void;
     @:native("SetWindowSize") static function setWindowSize(width:Int, height:Int):Void;
-    @:native("GetWindowHandle") static function getWindowHandle():Star<Void>; // Not to be used in haxe
+    @:native("GetWindowHandle") static function getWindowHandle():RawPointer<Void>; // Not to be used in haxe
     @:native("GetScreenWidth") static function getScreenWidth():Int;
     @:native("GetScreenHeight") static function getScreenHeight():Int;
     @:native("GetMonitorCount") static function getMonitorCount():Int;
@@ -1471,7 +1472,7 @@ extern class Raylib {
     @:native("GetShaderLocation") static function getShaderLocation(shader:Shader, uniformName:ConstCharStar):Int;
     @:native("GetShaderLocationAttrib") static function getShaderLocationAttrib(shader:Shader, attribName:ConstCharStar):Int;
     @:native("SetShaderValue") static function setShaderValue(shader:Shader, locIndex:Int, value:RawConstPointer<Void>, uniformType:Int):Void;
-    @:native("SetShaderValueV") static function setShaderValueV(shader:Shader, locIndex:Int, value:ConstStar<Void>, uniformType:Int, count:Int):Void;
+    @:native("SetShaderValueV") static function setShaderValueV(shader:Shader, locIndex:Int, value:RawConstPointer<Void>, uniformType:Int, count:Int):Void;
     @:native("SetShaderValueMatrix") static function setShaderValueMatrix(shader:Shader, locIndex:Int, mat:Matrix):Void;
     @:native("SetShaderValueTexture") static function setShaderValueTexture(shader:Shader, locIndex:Int, texture:Texture2D):Void;
     @:native("UnloadShader") static function unloadShader(shader:Shader):Void;
@@ -1501,15 +1502,15 @@ extern class Raylib {
 
     @:native("TraceLog") static function traceLog(logLevel:Int, text:ConstCharStar):Void;
     @:native("SetTraceLogLevel") static function setTraceLogLevel(logLevel:Int):Void;
-    @:native("MemAlloc") static function memAlloc(size:Int):Star<Void>;
-    @:native("MemRealloc") static function memRealloc(ptr:Star<Void>, size:Int):Star<Void>;
-    @:native("MemFree") static function memFree(ptr:Star<Void>):Void;
+    @:native("MemAlloc") static function memAlloc(size:Int):RawPointer<Void>;
+    @:native("MemRealloc") static function memRealloc(ptr:RawPointer<Void>, size:Int):RawPointer<Void>;
+    @:native("MemFree") static function memFree(ptr:RawPointer<Void>):Void;
 
 
     // Files management functions
-    @:native("LoadFileData") static function loadFileData(filename:ConstCharStar, bytesRead:Star<UInt>):Star<UInt16>;
-    @:native("UnloadFileData") static function unloadFileData(data:Star<UInt16>):Void;
-    @:native("SaveFileData") static function saveFileData(filename:Star<UInt16>, data:Star<Void>, byetsToWrite:UInt):Bool;
+    @:native("LoadFileData") static function loadFileData(filename:ConstCharStar, bytesRead:RawPointer<UInt>):RawPointer<UInt16>;
+    @:native("UnloadFileData") static function unloadFileData(data:RawPointer<UInt16>):Void;
+    @:native("SaveFileData") static function saveFileData(filename:RawPointer<UInt16>, data:RawPointer<Void>, byetsToWrite:UInt):Bool;
     @:native("LoadFileText") static function loadFileText(fileName:ConstCharStar):Char;
     @:native("UnloadFileText") static function unloadFileText(text:ConstCharStar):Void;
     @:native("SaveFileText") static function saveFileText(fileName:ConstCharStar, text:ConstCharStar):Bool;
@@ -1525,8 +1526,8 @@ extern class Raylib {
     @:native("GetApplicationDirectory") static function getApplicationDirectory():ConstCharStar;
     @:native("ChangeDirectory") static function changeDirectory(dir:ConstCharStar):Bool;
     @:native("IsPathFile") static function isPathFile(path:ConstCharStar):Bool;
-    @:native("LoadDirectoryFiles") static function loadDirectoryFiles(dirPath:Star<ConstCharStar>):FilePathList;
-    @:native("LoadDirectoryFilesEx") static function loadDirectoryFilesEx(basePath:Star<ConstCharStar>, filter:Star<ConstCharStar>, scanSubdirs:Bool):FilePathList;
+    @:native("LoadDirectoryFiles") static function loadDirectoryFiles(dirPath:RawPointer<ConstCharStar>):FilePathList;
+    @:native("LoadDirectoryFilesEx") static function loadDirectoryFilesEx(basePath:RawPointer<ConstCharStar>, filter:RawPointer<ConstCharStar>, scanSubdirs:Bool):FilePathList;
     @:native("UnloadDirectoryFiles") static function unloadDirectoryFiles(files:FilePathList):Void;
     @:native("IsFileDropped") static function isFileDropped():Bool;
     @:native("LoadDroppedFiles") static function loadDroppedFiles():FilePathList;
@@ -1592,8 +1593,8 @@ extern class Raylib {
     @:native("GetGesturePinchAngle") static function getGesturePinchAngle():Float;
 
     // Camera system functions
-    @:native("UpdateCamera") static function updateCamera(camera:Star<Camera3D>, cameraMode:Int):Void;
-    @:native("UpdateCameraPro") static function updateCameraPro(camera:Star<Camera>, movement:Vector3, rotation:Vector3, zoom:Float):Void;
+    @:native("UpdateCamera") static function updateCamera(camera:RawPointer<Camera3D>, cameraMode:Int):Void;
+    @:native("UpdateCameraPro") static function updateCameraPro(camera:RawPointer<Camera>, movement:Vector3, rotation:Vector3, zoom:Float):Void;
 
     @:native("SetCameraPanControl") static function setCameraPanControl(keyPan:Int):Void;
     @:native("SetCameraAltControl") static function setCameraAltControl(keyAlt:Int):Void;
@@ -1613,7 +1614,7 @@ extern class Raylib {
     @:native("DrawLineEx") static function drawLineEx(startPos:Vector2, endPos:Vector2, thick:Float, color:Color):Void;
     @:native("DrawLineBezier") static function drawLineBezier(startPos:Vector2, endPos:Vector2, thick:Float, color:Color):Void;
     @:native("DrawLineBezierQuad") static function drawLineBezierQuad(startPos:Vector2, endPos:Vector2, controlPos:Vector2, thick:Float, color:Color):Void;
-    @:native("DrawLineStrip") static function drawLineStrip(points:Star<Vector2>, pointsCount:Int, color:Color):Void;
+    @:native("DrawLineStrip") static function drawLineStrip(points:RawPointer<RlVector2>, pointsCount:Int, color:Color):Void;
     @:native("DrawCircle") static function drawCircle(centerX:Int, centerY:Int, radius:Float, color:Color):Void;
     @:native("DrawCircleSector") static function drawCircleSector(center:Vector2, radius:Float, startAngle:Float, endAngle:Float, segments:Int,
         color:Color):Void;
@@ -1639,14 +1640,14 @@ extern class Raylib {
         color:Color):Void;
     @:native("DrawTriangle") static function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2, color:Color):Void;
     @:native("DrawTriangleLines") static function drawTriangleLines(v1:Vector2, v2:Vector2, v3:Vector2, color:Color):Void;
-    @:native("DrawTriangleFan") static function drawTriangleFan(points:Star<Vector2>, pointsCount:Int, color:Color):Void;
-    @:native("DrawTriangleStrip") static function drawTriangleStrip(points:Star<Vector2>, pointsCount:Int, color:Color):Void;
+    @:native("DrawTriangleFan") static function drawTriangleFan(points:RawPointer<RlVector2>, pointsCount:Int, color:Color):Void;
+    @:native("DrawTriangleStrip") static function drawTriangleStrip(points:RawPointer<RlVector2>, pointsCount:Int, color:Color):Void;
     @:native("DrawPoly") static function drawPoly(center:Vector2, sides:Int, radius:Float, rotation:Float, color:Color):Void;
     @:native("DrawPolyLines") static function drawPolyLines(center:Vector2, sides:Int, radius:Float, rotation:Float, color:Color):Void;
     @:native("DrawPolyLinesEx") static function drawPolyLinesEx(center:Vector2, sides:Int, radius:Float, rotation:Float, lineThick:Float, color:Color):Void;
 
     // IMPLEMENT DRAW SPLINE FUNCTIONS
-    @:native("DrawSplineLinear") static function drawSplineLinear(points:Star<Vector2>, pointCount:Int, thick:Float, color:Color):Void;
+    @:native("DrawSplineLinear") static function drawSplineLinear(points:RawPointer<RlVector2>, pointCount:Int, thick:Float, color:Color):Void;
 
     // IMPLEMENT GET SPLINE FUNCTIONS
     
@@ -1658,7 +1659,7 @@ extern class Raylib {
     @:native("CheckCollisionPointCircle") static function checkCollisionPointCircle(point:Vector2, center:Vector2, radius:Float):Bool;
     @:native("CheckCollisionPointTriangle") static function checkCollisionPointTriangle(point:Vector2, p1:Vector2, p2:Vector2, p3:Vector2):Bool;
     @:native("CheckCollisionLines") static function checkCollisionLines(startPos1:Vector2, endPos1:Vector2, startPos2:Vector2, endPos2:Vector2,
-        collisionPoint:Star<Vector2>):Bool;
+        collisionPoint:RawPointer<RlVector2>):Bool;
     @:native("CheckCollisionPointLine") static function checkCollisionPointLine(point:Vector2, p1:Vector2, p2:Vector2, threshold:Int):Bool;
     @:native("GetCollisionRec") static function getCollisionRec(rec1:Rectangle, rec2:Rectangle):Rectangle;
 
@@ -1669,7 +1670,7 @@ extern class Raylib {
     @:native("LoadImage") static function loadImage(fileName:ConstCharStar):Image;
     @:native("LoadImageRaw") static function loadImageRaw(fileName:ConstCharStar, width:Int, height:Int, format:Int, headerSize:Int):Image;
     @:native("LoadImageAnim") static function loadImageAnim(fileName:ConstCharStar, frames:Int):Image;
-    @:native("LoadImageFromMemory") static function loadImageFromMemory(fileType:ConstCharStar, fileData:ConstStar<UInt8>, dataSize:Int):Image;
+    @:native("LoadImageFromMemory") static function loadImageFromMemory(fileType:ConstCharStar, fileData:RawConstPointer<UInt8>, dataSize:Int):Image;
     @:native("LoadImageFromTexture") static function loadImageFromTexture(texture:Texture2D):Image;
     @:native("LoadImageFromScreen") static function loadImageFromScreen():Void;
     @:native("UnloadImage") static function unloadImage(image:Image):Void;
@@ -1690,51 +1691,52 @@ extern class Raylib {
     @:native("ImageFromImage") static function imageFromImage(image:Image, rec:Rectangle):Image;
     @:native("ImageText") static function imageText(text:ConstCharStar, fontSize:Int, color:Color):Image;
     @:native("ImageTextEx") static function imageTextEx(font:Font, text:ConstCharStar, fontSize:Float, spacing:Float, tint:Color):Image;
-    @:native("ImageFormat") static function imageFormat(image:Star<Image>, newFormat:Int):Void;
-    @:native("ImageToPOT") static function imageToPOT(image:Star<Image>, fill:Color):Void;
-    @:native("ImageCrop") static function imageCrop(image:Star<Image>, crop:Rectangle):Void;
-    @:native("ImageAlphaCrop") static function imageAlphaCrop(image:Star<Image>, threshold:Float):Void;
-    @:native("ImageAlphaClear") static function imageAlphaClear(image:Star<Image>, threshold:Float):Void;
-    @:native("ImageAlphaMask") static function imageAlphaMask(image:Star<Image>, alphaMask:Image):Void;
-    @:native("ImageAlphaPremultiply") static function imageAlphaPremultiply(image:Star<Image>):Void;
-    @:native("ImageResize") static function imageResize(image:Star<Image>, newWidth:Int, newHeight:Int):Void;
-    @:native("ImageResizeNN") static function imageResizeNN(image:Star<Image>, newWidth:Int, newHeight:Int):Void;
-    @:native("ImageResizeCanvas") static function imageResizeCanvas(image:Star<Image>, newWidth:Int, newHeight:Int, offsetX:Int, offsetY:Int, fill:Color):Void;
-    @:native("ImageMipmaps") static function imageMipmaps(image:Star<Image>):Void;
-    @:native("ImageDither") static function imageDither(image:Star<Image>, rBpp:Int, gBpp:Int, bBpp:Int, aBpp:Int):Void;
-    @:native("ImageFlipVertical") static function imageFlipVertical(image:Star<Image>):Void;
-    @:native("ImageFlipHorizontal") static function imageFlipHorizontal(image:Star<Image>):Void;
-    @:native("ImageRotateCW") static function imageRotateCW(image:Star<Image>):Void;
-    @:native("ImageRotateCCW") static function imageRotateCCW(image:Star<Image>):Void;
-    @:native("ImageColorTint") static function imageColorTint(image:Star<Image>, color:Color):Void;
-    @:native("ImageColorInvert") static function imageColorInvert(image:Star<Image>):Void;
-    @:native("ImageColorGrayscale") static function imageColorGrayscale(image:Star<Image>):Void;
-    @:native("ImageColorContrast") static function imageColorContrast(image:Star<Image>, contrast:Float):Void;
-    @:native("ImageColorBrightness") static function imageColorBrightness(image:Star<Image>, brightness:Int):Void;
-    @:native("ImageColorReplace") static function imageColorReplace(image:Star<Image>, color:Color, replace:Color):Void;
-    @:native("LoadImageColors") static function loadImageColors(image:Image):Star<Color>;
-    @:native("LoadImagePalette") static function loadImagePalette(image:Image, maxPaletteSize:Int, colorsCount:Star<Int>):Star<Color>;
-    @:native("UnloadImageColors") static function unloadImageColors(colors:Star<Color>):Void;
-    @:native("UnloadImagePalette") static function unloadImagePalette(colors:Star<Color>):Void;
+    @:native("ImageFormat") static function imageFormat(image:RawPointer<RlImage>, newFormat:Int):Void;
+    @:native("ImageToPOT") static function imageToPOT(image:RawPointer<RlImage>, fill:Color):Void;
+    @:native("ImageCrop") static function imageCrop(image:RawPointer<RlImage>, crop:Rectangle):Void;
+    @:native("ImageAlphaCrop") static function imageAlphaCrop(image:RawPointer<RlImage>, threshold:Float):Void;
+    @:native("ImageAlphaClear") static function imageAlphaClear(image:RawPointer<RlImage>, threshold:Float):Void;
+    @:native("ImageAlphaMask") static function imageAlphaMask(image:RawPointer<RlImage>, alphaMask:Image):Void;
+    @:native("ImageAlphaPremultiply") static function imageAlphaPremultiply(image:RawPointer<RlImage>):Void;
+    @:native("ImageResize") static function imageResize(image:RawPointer<RlImage>, newWidth:Int, newHeight:Int):Void;
+    @:native("ImageResizeNN") static function imageResizeNN(image:RawPointer<RlImage>, newWidth:Int, newHeight:Int):Void;
+    @:native("ImageResizeCanvas") static function imageResizeCanvas(image:RawPointer<RlImage>, newWidth:Int, newHeight:Int, offsetX:Int, offsetY:Int, fill:Color):Void;
+    @:native("ImageMipmaps") static function imageMipmaps(image:RawPointer<RlImage>):Void;
+    @:native("ImageDither") static function imageDither(image:RawPointer<RlImage>, rBpp:Int, gBpp:Int, bBpp:Int, aBpp:Int):Void;
+    @:native("ImageFlipVertical") static function imageFlipVertical(image:RawPointer<RlImage>):Void;
+    @:native("ImageFlipHorizontal") static function imageFlipHorizontal(image:RawPointer<RlImage>):Void;
+    @:native("ImageRotateCW") static function imageRotateCW(image:RawPointer<RlImage>):Void;
+    @:native("ImageRotateCCW") static function imageRotateCCW(image:RawPointer<RlImage>):Void;
+    @:native("ImageColorTint") static function imageColorTint(image:RawPointer<RlImage>, color:Color):Void;
+    @:native("ImageColorInvert") static function imageColorInvert(image:RawPointer<RlImage>):Void;
+    @:native("ImageColorGrayscale") static function imageColorGrayscale(image:RawPointer<RlImage>):Void;
+    @:native("ImageColorContrast") static function imageColorContrast(image:RawPointer<RlImage>, contrast:Float):Void;
+    @:native("ImageColorBrightness") static function imageColorBrightness(image:RawPointer<RlImage>, brightness:Int):Void;
+    @:native("ImageColorReplace") static function imageColorReplace(image:RawPointer<RlImage>, color:Color, replace:Color):Void;
+    @:native("ImageBlurGaussian") static function imageBlurGaussian(image:RawPointer<RlImage>, blurSize:Int):Void;
+    @:native("LoadImageColors") static function loadImageColors(image:Image):RawPointer<RlColor>;
+    @:native("LoadImagePalette") static function loadImagePalette(image:Image, maxPaletteSize:Int, colorsCount:RawPointer<Int>):RawPointer<RlColor>;
+    @:native("UnloadImageColors") static function unloadImageColors(colors:RawPointer<RlColor>):Void;
+    @:native("UnloadImagePalette") static function unloadImagePalette(colors:RawPointer<RlColor>):Void;
     @:native("GetImageAlphaBorder") static function getImageAlphaBorder(image:Image, threshold:Float):Rectangle;
     @:native("GetImageColor") static function getImageColor(image:Image, x:Int, y:Int):Color;
 
     // Image drawing functions
     // NOTE: Image software-rendering functions (CPU)
-    @:native("ImageClearBackground") static function imageClearBackground(dst:Star<Image>, color:Color):Void;
-    @:native("ImageDrawPixel") static function imageDrawPixel(dst:Star<Image>, posX:Int, posY:Int, color:Color):Void;
-    @:native("ImageDrawPixelV") static function imageDrawPixelV(dst:Star<Image>, position:Vector2, color:Color):Void;
-    @:native("ImageDrawLine") static function imageDrawLine(dst:Star<Image>, startPosX:Int, startPosY:Int, endPosX:Int, endPosY:Int, color:Color):Void;
-    @:native("ImageDrawLineV") static function imageDrawLineV(dst:Star<Image>, start:Vector2, end:Vector2, color:Color):Void;
-    @:native("ImageDrawCircle") static function imageDrawCircle(dst:Star<Image>, centerX:Int, centerY:Int, radius:Int, color:Color):Void;
-    @:native("ImageDrawCircleV") static function imageDrawCircleV(dst:Star<Image>, center:Vector2, radius:Int, color:Color):Void;
-    @:native("ImageDrawRectangle") static function imageDrawRectangle(dst:Star<Image>, posX:Int, posY:Int, width:Int, height:Int, color:Color):Void;
-    @:native("ImageDrawRectangleV") static function imageDrawRectangleV(dst:Star<Image>, position:Vector2, size:Vector2, color:Color):Void;
-    @:native("ImageDrawRectangleRec") static function imageDrawRectangleRec(dst:Star<Image>, rec:Rectangle, color:Color):Void;
-    @:native("ImageDrawRectangleLines") static function imageDrawRectangleLines(dst:Star<Image>, rec:Rectangle, thick:Int, color:Color):Void;
-    @:native("ImageDraw") static function imageDraw(dst:Star<Image>, src:Image, srcRec:Rectangle, dstRec:Rectangle, tint:Color):Void;
-    @:native("ImageDrawText") static function imageDrawText(dst:Star<Image>, text:ConstCharStar, posX:Int, posY:Int, fontSize:Int, color:Color):Void;
-    @:native("ImageDrawTextEx") static function imageDrawTextEx(dst:Star<Image>, font:Font, text:ConstCharStar, position:Vector2, fontSize:Float,
+    @:native("ImageClearBackground") static function imageClearBackground(dst:RawPointer<RlImage>, color:Color):Void;
+    @:native("ImageDrawPixel") static function imageDrawPixel(dst:RawPointer<RlImage>, posX:Int, posY:Int, color:Color):Void;
+    @:native("ImageDrawPixelV") static function imageDrawPixelV(dst:RawPointer<RlImage>, position:Vector2, color:Color):Void;
+    @:native("ImageDrawLine") static function imageDrawLine(dst:RawPointer<RlImage>, startPosX:Int, startPosY:Int, endPosX:Int, endPosY:Int, color:Color):Void;
+    @:native("ImageDrawLineV") static function imageDrawLineV(dst:RawPointer<RlImage>, start:Vector2, end:Vector2, color:Color):Void;
+    @:native("ImageDrawCircle") static function imageDrawCircle(dst:RawPointer<RlImage>, centerX:Int, centerY:Int, radius:Int, color:Color):Void;
+    @:native("ImageDrawCircleV") static function imageDrawCircleV(dst:RawPointer<RlImage>, center:Vector2, radius:Int, color:Color):Void;
+    @:native("ImageDrawRectangle") static function imageDrawRectangle(dst:RawPointer<RlImage>, posX:Int, posY:Int, width:Int, height:Int, color:Color):Void;
+    @:native("ImageDrawRectangleV") static function imageDrawRectangleV(dst:RawPointer<RlImage>, position:Vector2, size:Vector2, color:Color):Void;
+    @:native("ImageDrawRectangleRec") static function imageDrawRectangleRec(dst:RawPointer<RlImage>, rec:Rectangle, color:Color):Void;
+    @:native("ImageDrawRectangleLines") static function imageDrawRectangleLines(dst:RawPointer<RlImage>, rec:Rectangle, thick:Int, color:Color):Void;
+    @:native("ImageDraw") static function imageDraw(dst:RawPointer<RlImage>, src:Image, srcRec:Rectangle, dstRec:Rectangle, tint:Color):Void;
+    @:native("ImageDrawText") static function imageDrawText(dst:RawPointer<RlImage>, text:ConstCharStar, posX:Int, posY:Int, fontSize:Int, color:Color):Void;
+    @:native("ImageDrawTextEx") static function imageDrawTextEx(dst:RawPointer<RlImage>, font:Font, text:ConstCharStar, position:Vector2, fontSize:Float,
         spacing:Float, tint:Color):Void;
 
     // Texture Loading functions
@@ -1745,11 +1747,11 @@ extern class Raylib {
     @:native("LoadRenderTexture") static function loadRenderTexture(width:Int, height:Int):RenderTexture2D;
     @:native("UnloadTexture") static function unloadTexture(texture:Texture2D):Void;
     @:native("UnloadRenderTexture") static function unloadRenderTexture(texture:RenderTexture2D):Void;
-    @:native("UpdateTexture") static function updateTexture(texture:Texture2D, pixels:ConstStar<Void>):Void;
-    @:native("UpdateTextureRec") static function updateTextureRec(texture:Texture2D, rec:Rectangle, pixels:ConstStar<Void>):Void;
+    @:native("UpdateTexture") static function updateTexture(texture:Texture2D, pixels:RawConstPointer<Void>):Void;
+    @:native("UpdateTextureRec") static function updateTextureRec(texture:Texture2D, rec:Rectangle, pixels:RawConstPointer<Void>):Void;
 
     // Texture configuration functions
-    @:native("GenTextureMipmaps") static function genTextureMipmaps(texture:Star<Texture2D>):Void;
+    @:native("GenTextureMipmaps") static function genTextureMipmaps(texture:RawPointer<Texture2D>):Void;
     @:native("SetTextureFilter") static function setTextureFilter(texture:Texture2D, filter:Int):Void;
     @:native("SetTextureWrap") static function setTextureWrap(texture:Texture2D, wrap:Int):Void;
 
@@ -1765,7 +1767,7 @@ extern class Raylib {
         tint:Color):Void;
     @:native("DrawTextureNPatch") static function drawTextureNPatch(texture:Texture2D, nPatchInfo:NPatchInfo, dest:Rectangle, origin:Vector2, rotation:Float,
         tint:Color):Void;
-    @:native("DrawTexturePoly") static function drawTexturePoly(texture:Texture2D, center:Vector2, points:Star<Vector2>, texcoords:Star<Vector2>,
+    @:native("DrawTexturePoly") static function drawTexturePoly(texture:Texture2D, center:Vector2, points:RawPointer<RlVector2>, texcoords:RawPointer<RlVector2>,
         pointsCount:Int, tint:Color):Void;
 
     // Color pixel related functions
@@ -1778,8 +1780,8 @@ extern class Raylib {
     @:native("ColorAlpha") static function colorAlpha(color:Color, alpha:Float):Color;
     @:native("ColorAlphaBlend") static function colorAlphaBlend(dst:Color, src:Color, tint:Color):Color;
     @:native("GetColor") static function getColor(hexValue:UInt):Color;
-    @:native("GetPixelColor") static function getPixelColor(srcPtr:Star<Void>, format:PixelFormat):Color;
-    @:native("SetPixelColor") static function setPixelColor(dstPtr:Star<Void>, color:Color, format:Int):Void;
+    @:native("GetPixelColor") static function getPixelColor(srcPtr:RawPointer<Void>, format:PixelFormat):Color;
+    @:native("SetPixelColor") static function setPixelColor(dstPtr:RawPointer<Void>, color:Color, format:Int):Void;
     @:native("GetPixelDataSize") static function getPixelDataSize(width:Int, height:Int, format:Int):Int;
 
     //------------------------------------------------------------------------------------
@@ -1788,15 +1790,15 @@ extern class Raylib {
     // Font loading/unloading functions
     @:native("GetFontDefault") static function getFontDefault():Void;
     @:native("LoadFont") static function loadFont(fileName:ConstCharStar):Font;
-    @:native("LoadFontEx") static function loadFontEx(fileName:ConstCharStar, fontSize:Int, fontChars:Star<Int>, glyphCount:Int):Font;
+    @:native("LoadFontEx") static function loadFontEx(fileName:ConstCharStar, fontSize:Int, fontChars:RawPointer<Int>, glyphCount:Int):Font;
     @:native("LoadFontFromImage") static function loadFontFromImage(image:Image, key:Color, firstChar:Int):Font;
-    @:native("LoadFontFromMemory") static function loadFontFromMemory(fileType:ConstCharStar, fileData:Star<UInt8>, dataSize:Int, fontSize:Int,
-        fontChars:Star<Int>, glyphCount:Int):Font;
-    @:native("LoadFontData") static function loadFontData(fileData:ConstStar<UInt8>, dataSize:Int, fontSize:Int, fontChars:Star<Int>, glyphCount:Int,
+    @:native("LoadFontFromMemory") static function loadFontFromMemory(fileType:ConstCharStar, fileData:RawPointer<UInt8>, dataSize:Int, fontSize:Int,
+        fontChars:RawPointer<Int>, glyphCount:Int):Font;
+    @:native("LoadFontData") static function loadFontData(fileData:RawConstPointer<UInt8>, dataSize:Int, fontSize:Int, fontChars:RawPointer<Int>, glyphCount:Int,
         type:Int):GlyphInfo;
-    @:native("GenImageFontAtlas") static function genImageFontAtlas(chars:ConstStar<GlyphInfo>, recs:Star<Star<Rectangle>>, glyphCount:Int, fontSize:Int,
+    @:native("GenImageFontAtlas") static function genImageFontAtlas(chars:RawConstPointer<RlGlyphInfo>, recs:RawPointer<RawPointer<Rectangle>>, glyphCount:Int, fontSize:Int,
         padding:Int, packMethod:Int):Image;
-    @:native("UnloadFontData") static function unloadFontData(chars:Star<GlyphInfo>, glyphCount:Int):Void;
+    @:native("UnloadFontData") static function unloadFontData(chars:RawPointer<RlGlyphInfo>, glyphCount:Int):Void;
     @:native("UnloadFont") static function unloadFont(font:Font):Void;
 
     // Text drawing functions
@@ -1817,7 +1819,7 @@ extern class Raylib {
     // CODEPOINT FUNCTIONS
 
     // Text string management functions
-    @:native("TextCopy") static function textCopy(dst:cpp.Star<cpp.Char>, src:cpp.ConstCharStar):Int;
+    @:native("TextCopy") static function textCopy(dst:cpp.RawPointer<cpp.Char>, src:cpp.ConstCharStar):Int;
     // TEXT FUNCTIONS NOT NECESSARY AS HAXE HAS STRING TOOLS
 
     //------------------------------------------------------------------------------------
@@ -1828,7 +1830,7 @@ extern class Raylib {
     @:native("DrawPoint3D") static function drawPoint3D(position:Vector3, color:Color):Void;
     @:native("DrawCircle3D") static function drawCircle3D(center:Vector3, radius:Float, rotationAxis:Vector3, rotationAngle:Float, color:Color):Void;
     @:native("DrawTriangle3D") static function drawTriangle3D(v1:Vector3, v2:Vector3, v3:Vector3, color:Color):Void;
-    @:native("DrawTriangleStrip3D") static function drawTriangleStrip3D(points:Star<Vector3>, pointsCount:Int, color:Color):Void;
+    @:native("DrawTriangleStrip3D") static function drawTriangleStrip3D(points:RawPointer<RlVector3>, pointsCount:Int, color:Color):Void;
     @:native("DrawCube") static function drawCube(position:Vector3, width:Float, height:Float, length:Float, color:Color):Void;
     @:native("DrawCubeV") static function drawCubeV(position:Vector3, size:Vector3, color:Color):Void;
     @:native("DrawCubeWires") static function drawCubeWires(position:Vector3, width:Float, height:Float, length:Float, color:Color):Void;
@@ -1873,15 +1875,15 @@ extern class Raylib {
         size:Vector2, origin:Vector2, rotation:Float, tint:Color):Void;
 
     // Mesh management functions
-    @:native("UploadMesh") static function uploadMesh(mesh:Star<Mesh>, dyn:Bool):Void;
-    @:native("UpdateMeshBuffer") static function updateMeshBuffer(mesh:Mesh, index:Int, data:Star<Void>, dataSize:Int, offset:Int):Void;
+    @:native("UploadMesh") static function uploadMesh(mesh:RawPointer<RlMesh>, dyn:Bool):Void;
+    @:native("UpdateMeshBuffer") static function updateMeshBuffer(mesh:Mesh, index:Int, data:RawPointer<Void>, dataSize:Int, offset:Int):Void;
     @:native("UnloadMesh") static function unloadMesh(mesh:Mesh):Void;
     @:native("DrawMesh") static function drawMesh(mesh:Mesh, material:Material, transform:Matrix):Void;
-    @:native("DrawMeshInstanced") static function drawMeshInstanced(mesh:Mesh, material:Material, transforms:Star<Matrix>, instances:Int):Void;
+    @:native("DrawMeshInstanced") static function drawMeshInstanced(mesh:Mesh, material:Material, transforms:RawPointer<RlMatrix>, instances:Int):Void;
     @:native("ExportMesh") static function exportMesh(mesh:Mesh, fileName:ConstCharStar):Bool;
     @:native("GetMeshBoundingBox") static function getMeshBoundingBox(mesh:Mesh):BoundingBox;
-    @:native("GetMeshTangents") static function getMeshTangents(mesh:Star<Mesh>):Void;
-    @:native("GetMeshBinomials") static function getMeshBinomials(mesh:Star<Mesh>):Void;
+    @:native("GetMeshTangents") static function getMeshTangents(mesh:RawPointer<RlMesh>):Void;
+    @:native("GetMeshBinomials") static function getMeshBinomials(mesh:RawPointer<RlMesh>):Void;
 
     // Mesh generation functions
     @:native("GenMeshPoly") static function genMeshPoly(sides:Int, radius:Float):Mesh;
@@ -1897,17 +1899,17 @@ extern class Raylib {
     @:native("GenMeshCubicMap") static function genMeshCubicMap(cubicmap:Image, cubeSize:Vector3):Mesh;
 
     // Material loading/unloading functions
-    @:native("LoadMaterials") static function loadMaterials(fileName:ConstCharStar, materialCount:Star<Int>):Star<Material>;
+    @:native("LoadMaterials") static function loadMaterials(fileName:ConstCharStar, materialCount:RawPointer<Int>):RawPointer<Material>;
     @:native("LoadMaterialDefault") static function loadMaterialDefault():Material;
     @:native("UnloadMaterial") static function unloadMaterial(material:Material):Void;
-    @:native("SetMaterialTexture") static function setMaterialTexture(material:Star<Material>, mapType:Int, texture:Texture2D):Void;
-    @:native("SetModelMeshMaterial") static function setModelMeshMaterial(model:Star<Model>, meshId:Int, materialId:Int):Void;
+    @:native("SetMaterialTexture") static function setMaterialTexture(material:RawPointer<Material>, mapType:Int, texture:Texture2D):Void;
+    @:native("SetModelMeshMaterial") static function setModelMeshMaterial(model:RawPointer<Model>, meshId:Int, materialId:Int):Void;
 
     // Model animations loading/unloading functions
-    @:native("LoadModelAnimations") static function loadModelAnimations(fileName:ConstCharStar, animCount:Star<UInt>):Star<ModelAnimation>;
+    @:native("LoadModelAnimations") static function loadModelAnimations(fileName:ConstCharStar, animCount:RawPointer<UInt>):RawPointer<ModelAnimation>;
     @:native("UpdateModelAnimation") static function updateModelAnimation(model:Model, anim:ModelAnimation, frame:Int):Void;
     @:native("UnloadModelAnimation") static function unloadModelAnimation(anim:ModelAnimation):Void;
-    @:native("UnloadModelAnimations") static function unloadModelAnimations(animations:Star<ModelAnimation>, count:UInt):Void;
+    @:native("UnloadModelAnimations") static function unloadModelAnimations(animations:RawPointer<ModelAnimation>, count:UInt):Void;
     @:native("IsModelAnimationValid") static function isModelAnimationValid(model:Model, anim:ModelAnimation):Bool;
 
     // Collision detection functions
@@ -1933,7 +1935,7 @@ extern class Raylib {
 
     // Wave/Sound loading/unloading functions
     @:native("LoadWave") static function loadWave(fileName:ConstCharStar):Wave;
-    @:native("LoadWaveFromMemory") static function loadWaveFromMemory(fileType:ConstCharStar, fileData:Star<UInt8>, dataSize:Int):Wave;
+    @:native("LoadWaveFromMemory") static function loadWaveFromMemory(fileType:ConstCharStar, fileData:RawPointer<UInt8>, dataSize:Int):Wave;
     @:native("LoadSound") static function loadSound(fileName:ConstCharStar):Sound;
     @:native("LoadSoundFromWave") static function loadSoundFromWave(wave:Wave):Sound;
     @:native("UpdateSound") static function updateSound(sound:Sound, data:ConstCharStar, samplesCount:Int):Void;
@@ -1953,15 +1955,15 @@ extern class Raylib {
     @:native("IsSoundPlaying") static function isSoundPlaying(sound:Sound):Bool;
     @:native("SetSoundVolume") static function setSoundVolume(sound:Sound, volume:Float):Void;
     @:native("SetSoundPitch") static function setSoundPitch(sound:Sound, pitch:Float):Void;
-    @:native("WaveFormat") static function waveFormat(wave:Star<Wave>, sampleRate:Int, sampleSize:Int, channels:Int):Void;
+    @:native("WaveFormat") static function waveFormat(wave:RawPointer<Wave>, sampleRate:Int, sampleSize:Int, channels:Int):Void;
     @:native("WaveCopy") static function waveCopy(wave:Wave):Wave;
-    @:native("WaveCrop") static function waveCrop(wave:Star<Wave>, initSample:Int, finalSample:Int):Void;
-    @:native("LoadWaveSamples") static function loadWaveSamples(wave:Wave):Star<Float>;
-    @:native("UnloadWaveSamples") static function unloadWaveSamples(samples:Star<Float>):Void;
+    @:native("WaveCrop") static function waveCrop(wave:RawPointer<Wave>, initSample:Int, finalSample:Int):Void;
+    @:native("LoadWaveSamples") static function loadWaveSamples(wave:Wave):RawPointer<Float>;
+    @:native("UnloadWaveSamples") static function unloadWaveSamples(samples:RawPointer<Float>):Void;
 
     // Music management functions
     @:native("LoadMusicStream") static function loadMusicStream(fileName:ConstCharStar):Music;
-    @:native("LoadMusicStreamFromMemory") static function loadMusicStreamFromMemory(fileType:ConstCharStar, data:Star<UInt8>, dataSize:Int):Music;
+    @:native("LoadMusicStreamFromMemory") static function loadMusicStreamFromMemory(fileType:ConstCharStar, data:RawPointer<UInt8>, dataSize:Int):Music;
     @:native("UnloadMusicStream") static function unloadMusicStream(music:Music):Void;
     @:native("PlayMusicStream") static function playMusicStream(music:Music):Void;
     @:native("IsMusicStreamPlaying") static function isMusicStreamPlaying(music:Music):Bool;
@@ -1977,7 +1979,7 @@ extern class Raylib {
 
     // AudioStream management functions
     @:native("InitAudioStream") static function initAudioStream(sampleRate:UInt, sampleSize:UInt, channels:UInt):AudioStream;
-    @:native("UpdateAudioStream") static function updateAudioStream(stream:AudioStream, data:ConstStar<Void>, samplesCount:Int):Void;
+    @:native("UpdateAudioStream") static function updateAudioStream(stream:AudioStream, data:RawConstPointer<Void>, samplesCount:Int):Void;
     @:native("CloseAudioStream") static function closeAudioStream(stream:AudioStream):Void;
     @:native("IsAudioStreamProcessed") static function isAudioStreamProcessed(stream:AudioStream):Bool;
     @:native("PlayAudioStream") static function playAudioStream(stream:AudioStream):Void;
