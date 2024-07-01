@@ -311,7 +311,7 @@ extern class RlTexture {
 }
 
 /** Texture, tex data stored in GPU memory (VRAM) **/
-typedef Texture = RlTexture;
+typedef Texture = cpp.Struct<RlTexture>;
 
 /** Texture2D, same as Texture **/
 typedef Texture2D = Texture;
